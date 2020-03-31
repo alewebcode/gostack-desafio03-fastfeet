@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Order from '../models/Order';
 import Queue from '../../lib/Queue';
 import NewOrderMail from '../jobs/NewOderMail';
@@ -6,6 +7,18 @@ import Deliveryman from '../models/Deliveryman';
 import Recipient from '../models/Recipient';
 
 class OrderController {
+  async index(req, res) {
+    const { filter = '' } = req.query;
+
+    const orders = await Order.findAll({
+      where: {
+        product: { [Op.like]: `%${filter}%` },
+      },
+    });
+
+    return res.json(orders);
+  }
+
   async store(req, res) {
     const validation = Yup.object().shape({
       recipient_id: Yup.number().required(),
