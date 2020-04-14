@@ -14,6 +14,18 @@ class OrderController {
       where: {
         product: { [Op.like]: `%${filter}%` },
       },
+      include: [
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: ['name', 'city', 'state'],
+        },
+        {
+          model: Deliveryman,
+          as: 'deliveryman',
+          attributes: ['name'],
+        },
+      ],
     });
 
     return res.json(orders);

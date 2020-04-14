@@ -11,6 +11,19 @@ class Order extends Model {
         canceled_at: Sequelize.DATE,
         start_date: Sequelize.DATE,
         end_date: Sequelize.DATE,
+        status: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            if (this.canceled_at) {
+              return 'cancelada';
+            }
+            if (this.start_date) {
+              if (this.end_date) return 'entregue';
+              return 'retirada';
+            }
+            return 'pendente';
+          },
+        },
       },
       {
         sequelize,
